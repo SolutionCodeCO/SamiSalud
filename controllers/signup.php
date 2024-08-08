@@ -1,35 +1,48 @@
 <?php
-class Signup extends sessionController{
-    function __construct(){
+class Signup extends sessionController {
+    public function __construct(){
         parent::__construct();
+        error_log("Signup::construct -> Inicio de registro");
     }
 
-    function render(){
-        $this->view->render("login/signup", []);
+    public function render($successMessage = null, $errorMessage = null){
+        $messages = [];
+
+        if ($successMessage) {
+            $messages[] = (new SuccessMessages())->get($successMessage);
+        }
+
+        if ($errorMessage) {
+            $messages[] = (new ErrorMessages())->get($errorMessage);
+        }
+
+        $this->view->setMessages($messages);
+        $this->view->render("login/signup", $messages);
     }
 
     function newUser(){
-        if($this->existPOST(['usuario', 'contraseña'])){
+        if ($this->existPOST(['usuario', 'contraseña'])){
             $usuario = $this->getPost('usuario');
             $contraseña = $this->getPost('contraseña');
 
-            if($usuario == '' || empty($usuario) || $contraseña == '' || empty($contraseña)){
+            if ($usuario == '' || empty($usuario) || $contraseña == '' || empty($contraseña)){
                 $this->redirect('signup', ['error' => ErrorMessages::ERROR_SIGNUP_NEWUSER_EMPTY]);
+                return;
             }
 
-            $usuario = new EmpleadosModel();
-            $usuario -> setUsuario($usuario);
-            $contraseña -> setContraseña($contraseña);
-            $usuario -> setId_rol('empleado');
+            $usuarioModel = new EmpleadosModel();
+            $usuarioModel->setUsuario($usuario);
+            $usuarioModel->setContraseña($contraseña);
+            $usuarioModel->setId_rol('empleado');
 
-            if($usuario->exist($usuario)){
+            if ($usuarioModel->exist($usuario)){
                 $this->redirect('signup', ['error' => ErrorMessages::ERROR_SIGNUP_NEWUSER_EXISTS]);
-            }else if($usuario->save()){
+            } else if ($usuarioModel->save()){
                 $this->redirect('', ['success' => SuccessMessages::SUCCESS_CREATE_USER]);
-            }else{
+            } else {
                 $this->redirect('signup', ['error' => ErrorMessages::ERROR_SIGNUP_NEWUSER]);
             }
-        }else{
+        } else {
             $this->redirect('signup', ['error' => ErrorMessages::ERROR_SIGNUP_NEWUSER]);
         }
     }

@@ -1,12 +1,14 @@
-<?php
-
+<?php 
 class View {
+    private $data;
     private $messages = [];
 
-    public function __construct() {}
+    function __construct() {
+        // Inicializar mensajes si es necesario
+    }
 
     public function render($nombre, $data = []) {
-        $this->messages = $data;
+        $this->data;
         require 'views/' . $nombre . '.php';
     }
 
@@ -15,14 +17,12 @@ class View {
     }
 
     public function showMessages() {
-        if (!empty($this->messages)) {
-            foreach ($this->messages as $message) {
-                echo "<p>{$message}</p>";
-            }
+        foreach ($this->messages as $message) {
+            echo "<p>$message</p>";
         }
     }
 
-    public function getMessages() {
-        return $this->messages;
+    public function hasMessages() {
+        return !empty($this->messages);
     }
 }

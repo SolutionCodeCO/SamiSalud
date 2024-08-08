@@ -56,7 +56,7 @@ class Controller {
         return $_POST[$name];
     }
 
-    public function redirect($url, $mensajes) {
+    public function redirect($route, $mensajes) {
         $data = [];
         $params = '';
 
@@ -69,7 +69,6 @@ class Controller {
             $params = '?' . $params;
         }
 
-        header('Location: ' . constant('URL') . '/' . $url . $params);
-        exit(); // Asegúrate de que la ejecución se detenga después de la redirección
+        header('Location: ' . constant('URL') . "/" . $route . $params);
     }
 }
